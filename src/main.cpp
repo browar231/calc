@@ -8,9 +8,9 @@ int main()
     std::string request;
     while (running)
     {
-
-        std::getline(std::cin >> std::ws, request); // read a full line of text into age
-        std::cout << app.parseRequest(request) << std::endl;
+        std::cout << "Request: ";
+        std::getline(std::cin >> std::ws, request);
+        std::cout << "Answer: " << app.parseRequest(request) << std::endl;
         running = app.isFinished();
     }
 

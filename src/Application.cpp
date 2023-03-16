@@ -1,6 +1,6 @@
 #include <string>
 #include "Application.h"
-
+#include "Calculation.h"
 std::string Application::parseRequest(std::string request)
 {
     if (request.compare("exit") == 0)
@@ -8,7 +8,7 @@ std::string Application::parseRequest(std::string request)
         m_shouldTerminate = true;
         return "Terminating";
     };
-    return "Request: " + request;
+    return Calculation(request);
 };
 bool Application::isFinished()
 {
