@@ -1,6 +1,8 @@
 #include <iostream>
 #include <string>
 #include "Application.h"
+
+//test comment for educational purposes
 int main()
 {
     Application app;
