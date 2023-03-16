@@ -16,7 +16,7 @@ std::string Calculation(std::string expression)
         {
             result += std::stoi(Calculation(element));
         }
-        result *= negativeSignsAmount*-1;
+        result *= negativeSignsAmount * -1;
         return std::to_string(result);
     };
     if (expression.find("*") != std::string::npos)
