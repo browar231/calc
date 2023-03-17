@@ -9,14 +9,12 @@ std::string Calculation(std::string expression)
     if (expression.find("+") != std::string::npos)
     {
         std::vector<std::string> expbuffer;
-        int negativeSignsAmount = std::count(expression.begin(), expression.end(), '-');
         expbuffer = splitExpression(expression, '+');
         int result = 0;
         for (auto &element : expbuffer)
         {
             result += std::stoi(Calculation(element));
         }
-        result *= negativeSignsAmount * -1;
         return std::to_string(result);
     };
     if (expression.find("*") != std::string::npos)
