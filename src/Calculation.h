@@ -1,6 +1,8 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <stack>
+#include <deque>
 
 struct CalculationToken
 {
@@ -22,14 +24,19 @@ class Calculation
 public:
     Calculation(std::string);
     std::string giveAnswer();
-    void debugInfo();
 
 private:
     void parseTokens();
+    void assignTokens();
     char returnOperatorPrecedence(char);
+    char returnHighestPrecedenceInOperatorStack();
     bool isCharAnOperator(char);
-    std::vector<CalculationToken> m_tokenStack;
+    std::deque<CalculationToken> m_tokenStack;
     std::string m_expression;
-    std::vector<CalculationToken> m_numberQueue;
-    std::vector<CalculationToken> m_operatorQueue;
+    std::deque<CalculationToken> m_outputQueue;
+    std::stack<CalculationToken> m_operatorStack;
+    // debug
+public:
+    void debugInfo();
+    void debugOutput();
 };
