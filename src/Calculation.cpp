@@ -3,51 +3,83 @@
 // to be deleted
 #include <iostream>
 #include <algorithm>
+#include <ctype.h>
 #include "Calculation.h"
-std::string Calculation(std::string expression)
+
+#define DEBUG_INFO
+
+#ifdef DEBUG_INFO
+#define DEBUG(x) std::cout << x;
+#endif
+#ifndef DEBUG_INFO
+#define DEBUG(x)
+#endif
+
+Calculation::Calculation(std::string expression)
 {
-    if (expression.find("+") != std::string::npos)
-    {
-        std::vector<std::string> expbuffer;
-        expbuffer = splitExpression(expression, '+');
-        int result = 0;
-        for (auto &element : expbuffer)
-        {
-            result += std::stoi(Calculation(element));
-        }
-        return std::to_string(result);
-    };
-    if (expression.find("*") != std::string::npos)
-    {
-        std::vector<std::string> expbuffer;
-        expbuffer = splitExpression(expression, '*');
-        int result = 1;
-        for (auto &element : expbuffer)
-        {
-            result *= std::stoi(Calculation(element));
-        }
-        return std::to_string(result);
-    };
-    return expression;
+    m_expression = expression;
 };
-std::vector<std::string> splitExpression(std::string expression, char splitter)
+std::string Calculation::giveAnswer()
 {
-    std::vector<std::string> result;
-    std::string current = "";
-    for (int i = 0; i < expression.size(); i++)
+    parseTokens();
+#ifdef DEBUG_INFO
+    debugInfo();
+#endif
+    return "Answer";
+};
+char Calculation::returnOperatorPrecedence(char op)
+{
+    switch (op)
     {
-        if (expression[i] == splitter)
+    case '+':
+    case '-':
+        return 1;
+    case '*':
+    case '/':
+        return 2;
+    default:
+        return -1;
+    };
+};
+void Calculation::parseTokens()
+{
+    for (char &character : m_expression)
+    {
+        // TODO: currently works only for digits
+        if (isdigit(character))
         {
-            if (current != "")
-            {
-                result.push_back(current);
-                current = "";
-            }
-            continue;
+            m_tokenStack.push_back(CalculationToken{std::string(1, character), CalculationToken::TokenType::c_number, 0});
         }
-        current += expression[i];
+        if (isCharAnOperator(character))
+        {
+            m_tokenStack.push_back(CalculationToken{std::string(1, character), CalculationToken::TokenType::c_operator, returnOperatorPrecedence(character)});
+        }
     }
-    if (current.size() != 0)
-        result.push_back(current);
-    return result;
+};
+bool Calculation::isCharAnOperator(char c)
+{
+    if (c == '+')
+        return true;
+    if (c == '-')
+        return true;
+    if (c == '/')
+        return true;
+    if (c == '*')
+        return true;
+    return false;
 }
+void Calculation::debugInfo()
+{
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << "Tokens:" << std::endl;
+    std::cout << '\t';
+    for (CalculationToken i : m_tokenStack)
+    {
+        std::cout << i.m_string << '(' << +i.m_precedence << ')' << ' ';
+    }
+    std::cout << std::endl;
+    std::cout << std::endl;
+    std::cout << std::endl;
+};

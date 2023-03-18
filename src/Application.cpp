@@ -8,7 +8,8 @@ std::string Application::parseRequest(std::string request)
         m_shouldTerminate = true;
         return "Terminating";
     };
-    return Calculation(request);
+    Calculation calculation(request);
+    return calculation.giveAnswer();
 };
 bool Application::isFinished()
 {
