@@ -28,6 +28,8 @@ public:
 private:
     void parseTokens();
     void assignTokens();
+    std::string evaluateRPN();
+    std::string performMathOperation(std::string, std::string, std::string);
     char returnOperatorPrecedence(char);
     char returnHighestPrecedenceInOperatorStack();
     bool isCharAnOperator(char);
