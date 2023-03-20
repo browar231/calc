@@ -8,7 +8,8 @@ int main()
     Application app;
     bool running{true};
     std::string request;
-    std::cout << "Please type your request, allowed characters: numbers/+/*" << std::endl;
+    std::cout << "Please type your request, allowed operations: +-*/" << std::endl;
+    std::cout << "Currently works only for digits" << std::endl;
     std::cout << "Type exit to close" << std::endl;
     while (running)
     {
