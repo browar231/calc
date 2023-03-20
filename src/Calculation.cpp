@@ -27,7 +27,7 @@ std::string Calculation::giveAnswer()
     debugInfo();
     debugOutput();
 #endif
-    return "Answer";
+    return evaluateRPN();
 };
 char Calculation::returnOperatorPrecedence(char op)
 {
@@ -68,7 +68,7 @@ void Calculation::assignTokens()
         }
         if (token.m_type == CalculationToken::TokenType::c_operator)
         {
-            while (!m_operatorStack.empty() && m_operatorStack.top().m_precedence > token.m_precedence)
+            while (!m_operatorStack.empty() && m_operatorStack.top().m_precedence >= token.m_precedence)
             {
                 m_outputQueue.push_back(m_operatorStack.top());
                 m_operatorStack.pop();
@@ -81,6 +81,45 @@ void Calculation::assignTokens()
         m_outputQueue.push_back(m_operatorStack.top());
         m_operatorStack.pop();
     }
+}
+std::string Calculation::evaluateRPN()
+{
+    std::stack<std::string> evalStack;
+    for (CalculationToken token : m_outputQueue)
+    {
+        switch (token.m_type)
+        {
+        case CalculationToken::TokenType::c_number:
+            evalStack.push(token.m_string);
+            break;
+        case CalculationToken::TokenType::c_operator:
+            std::string a{evalStack.top()};
+            evalStack.pop();
+            std::string b{evalStack.top()};
+            evalStack.pop();
+            std::string result = Calculation::performMathOperation(token.m_string, a, b);
+            evalStack.push(result);
+            break;
+        }
+    };
+    return evalStack.top();
+}
+std::string Calculation::performMathOperation(std::string mathOperator, std::string a, std::string b)
+{
+    double result{0};
+    if (!mathOperator.compare("+"))
+        result = std::stod(a) + std::stod(b);
+    if (!mathOperator.compare("-"))
+        result = std::stod(a) - std::stod(b);
+    if (!mathOperator.compare("*"))
+        result = std::stod(a) * std::stod(b);
+    if (!mathOperator.compare("/"))
+    {
+        if (stoi(a) == 0)
+            return 0;
+        result = std::stod(b) / std::stod(a);
+    }
+    return std::to_string(result);
 }
 char Calculation::returnHighestPrecedenceInOperatorStack()
 {
