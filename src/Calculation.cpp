@@ -16,16 +16,29 @@ std::string Calculation::returnAnswer()
 };
 void Calculation::parseTokensFromRequest()
 {
-	for (char &character : m_expression)
+	for (std::string::size_type i = 0; i < m_expression.size(); i++)
 	{
-		// TODO: currently works only for digits
+		char character = m_expression[i];
 		if (isdigit(character))
 		{
-			m_tokenStack.push_back(CalculationToken{std::string(1, character), CalculationToken::TokenType::c_number, 0});
+			character -= '0';
+			if (!m_tokenStack.empty() && isdigit(m_expression[i - 1]))
+			{
+				int previousValue = m_expression[i - 1]-'0';
+				previousValue *= 10;
+				previousValue += character;
+				m_tokenStack.pop_back();
+				m_tokenStack.push_back(CalculationToken{std::to_string(previousValue), CalculationToken::TokenType::c_number, 0});
+			}
+			else
+			{
+				m_tokenStack.push_back(CalculationToken{std::string(1, character), CalculationToken::TokenType::c_number, 0});
+			}
 		}
 		if (isCharAnOperator(character))
 		{
-			m_tokenStack.push_back(CalculationToken{std::string(1, character), CalculationToken::TokenType::c_operator, returnOperatorPrecedence(character)});
+			m_tokenStack.push_back(CalculationToken{std::string(1, m_expression[i]), CalculationToken::TokenType::c_operator, returnOperatorPrecedence(character)});
+
 		}
 	}
 };
@@ -85,7 +98,8 @@ std::string Calculation::performMathOperation(std::string mathOperator, std::str
 	if (!mathOperator.compare("+"))
 		result = std::stod(a) + std::stod(b);
 	if (!mathOperator.compare("-"))
-		result = std::stod(a) - std::stod(b);
+		result = std::stod(b) - std::stod(a);
+
 	if (!mathOperator.compare("*"))
 		result = std::stod(a) * std::stod(b);
 	if (!mathOperator.compare("/"))
