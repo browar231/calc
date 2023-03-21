@@ -8,7 +8,7 @@
 #ifndef NDEBUG
 #define DEBUG(x) std::cout << x;
 #endif
-#ifndef NDEBUG
+#ifdef NDEBUG
 #define DEBUG(x)
 #endif
 
