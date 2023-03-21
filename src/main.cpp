@@ -1,7 +1,5 @@
-#include <iostream>
-#include <string>
 #include "Application.h"
-
+#include "Common.h"
 // test comment for educational purposes
 int main()
 {
@@ -15,9 +13,9 @@ int main()
     {
         std::cout << "Request: ";
         std::getline(std::cin >> std::ws, request);
-        std::cout << "Answer: " << app.parseRequest(request) << std::endl;
+        std::string_view answer = app.parseRequest(request);
+        std::cout << "Answer: " << answer << std::endl;
         running = app.isFinished();
     }
-
     return 0;
 }
