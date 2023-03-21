@@ -24,12 +24,11 @@ public:
     std::string giveAnswer();
 
 private:
-    void parseTokens();
-    void assignTokens();
+    void parseTokensFromRequest();
+    void produceRPNStack();
     std::string evaluateRPN();
     std::string performMathOperation(std::string, std::string, std::string);
     char returnOperatorPrecedence(char);
-    char returnHighestPrecedenceInOperatorStack();
     bool isCharAnOperator(char);
     std::deque<CalculationToken> m_tokenStack;
     std::string m_expression;

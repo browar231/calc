@@ -7,28 +7,14 @@
 Calculation::Calculation(const std::string &expression)
 {
     m_expression = expression;
+    parseTokensFromRequest();
+    produceRPNStack();
 };
 std::string Calculation::giveAnswer()
 {
-    parseTokens();
-    assignTokens();
     return evaluateRPN();
 };
-char Calculation::returnOperatorPrecedence(char op)
-{
-    switch (op)
-    {
-    case '+':
-    case '-':
-        return 1;
-    case '*':
-    case '/':
-        return 2;
-    default:
-        return -1;
-    };
-};
-void Calculation::parseTokens()
+void Calculation::parseTokensFromRequest()
 {
     for (char &character : m_expression)
     {
@@ -43,7 +29,7 @@ void Calculation::parseTokens()
         }
     }
 };
-void Calculation::assignTokens()
+void Calculation::produceRPNStack()
 {
     for (CalculationToken token : m_tokenStack)
     {
@@ -110,16 +96,6 @@ std::string Calculation::performMathOperation(std::string mathOperator, std::str
     }
     return std::to_string(result);
 }
-char Calculation::returnHighestPrecedenceInOperatorStack()
-{
-    char precedence = 0;
-    // for (CalculationToken token : m_operatorQueue)
-    // {
-    //     if (token.m_precedence > precedence)
-    //         precedence = token.m_precedence;
-    // }
-    return precedence;
-}
 bool Calculation::isCharAnOperator(char c)
 {
     if (c == '+')
@@ -132,3 +108,17 @@ bool Calculation::isCharAnOperator(char c)
         return true;
     return false;
 }
+char Calculation::returnOperatorPrecedence(char op)
+{
+    switch (op)
+    {
+    case '+':
+    case '-':
+        return 1;
+    case '*':
+    case '/':
+        return 2;
+    default:
+        return -1;
+    };
+};
