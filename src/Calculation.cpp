@@ -3,6 +3,7 @@
 // to be deleted
 #include <iostream>
 #include <algorithm>
+#include <math.h>
 #include <ctype.h>
 #include "Calculation.h"
 
@@ -102,6 +103,10 @@ std::string Calculation::evaluateRPN()
             break;
         }
     };
+    if (std::stod(evalStack.top()) == floor(std::stod(evalStack.top())))
+    {
+        return std::to_string(stoi(evalStack.top()));
+    }
     return evalStack.top();
 }
 std::string Calculation::performMathOperation(std::string mathOperator, std::string a, std::string b)
