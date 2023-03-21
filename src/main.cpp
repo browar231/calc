@@ -1,6 +1,5 @@
 #include "Application.h"
 #include "Common.h"
-// test comment for educational purposes
 int main()
 {
     Application app;
