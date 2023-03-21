@@ -1,22 +1,10 @@
-#include <string>
-#include <vector>
-// to be deleted
-#include <iostream>
 #include <algorithm>
 #include <math.h>
 #include <ctype.h>
 #include "Calculation.h"
+#include "Common.h"
 
-// #define DEBUG_INFO
-
-#ifdef DEBUG_INFO
-#define DEBUG(x) std::cout << x;
-#endif
-#ifndef DEBUG_INFO
-#define DEBUG(x)
-#endif
-
-Calculation::Calculation(std::string expression)
+Calculation::Calculation(const std::string &expression)
 {
     m_expression = expression;
 };
@@ -24,10 +12,6 @@ std::string Calculation::giveAnswer()
 {
     parseTokens();
     assignTokens();
-#ifdef DEBUG_INFO
-    debugInfo();
-    debugOutput();
-#endif
     return evaluateRPN();
 };
 char Calculation::returnOperatorPrecedence(char op)
@@ -148,29 +132,3 @@ bool Calculation::isCharAnOperator(char c)
         return true;
     return false;
 }
-void Calculation::debugInfo()
-{
-    std::cout << std::endl;
-    std::cout << std::endl;
-    std::cout << std::endl;
-    std::cout << "Tokens:" << std::endl;
-    std::cout << '\t';
-    for (CalculationToken i : m_tokenStack)
-    {
-        std::cout << i.m_string << '(' << +i.m_precedence << ')' << ' ';
-    }
-    std::cout << std::endl;
-    std::cout << std::endl;
-    std::cout << std::endl;
-};
-void Calculation::debugOutput()
-{
-
-    std::cout << "Output:" << std::endl;
-    std::cout << '\t';
-    for (CalculationToken i : m_outputQueue)
-    {
-        std::cout << i.m_string << ' ';
-    }
-    std::cout << std::endl;
-};

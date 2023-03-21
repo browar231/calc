@@ -1,6 +1,6 @@
-#include <string>
 #include "Application.h"
 #include "Calculation.h"
+#include "Common.h"
 std::string Application::parseRequest(std::string request)
 {
     if (request.compare("exit") == 0)

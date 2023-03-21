@@ -1,9 +1,7 @@
 #pragma once
-#include <string>
-#include <vector>
 #include <stack>
 #include <deque>
-
+#include "Common.h"
 struct CalculationToken
 {
 public:
@@ -22,7 +20,7 @@ class Calculation
 {
     // implementation of Shuning yard algorithm
 public:
-    Calculation(std::string);
+    Calculation(const std::string &);
     std::string giveAnswer();
 
 private:
@@ -37,8 +35,4 @@ private:
     std::string m_expression;
     std::deque<CalculationToken> m_outputQueue;
     std::stack<CalculationToken> m_operatorStack;
-    // debug
-public:
-    void debugInfo();
-    void debugOutput();
 };
