@@ -4,7 +4,6 @@
 #include <string>
 #include <string_view>
 
-
 #ifndef NDEBUG
 #define DEBUG(x) std::cout << x;
 #endif

@@ -10,7 +10,7 @@ Calculation::Calculation(const std::string &expression)
 	parseTokensFromRequest();
 	produceRPNStack();
 };
-std::string Calculation::giveAnswer()
+std::string Calculation::returnAnswer()
 {
 	return evaluateRPN();
 };
@@ -38,6 +38,7 @@ void Calculation::parseTokensFromRequest()
 		if (isCharAnOperator(character))
 		{
 			m_tokenStack.push_back(CalculationToken{std::string(1, m_expression[i]), CalculationToken::TokenType::c_operator, returnOperatorPrecedence(character)});
+
 		}
 	}
 };
@@ -98,6 +99,7 @@ std::string Calculation::performMathOperation(std::string mathOperator, std::str
 		result = std::stod(a) + std::stod(b);
 	if (!mathOperator.compare("-"))
 		result = std::stod(b) - std::stod(a);
+
 	if (!mathOperator.compare("*"))
 		result = std::stod(a) * std::stod(b);
 	if (!mathOperator.compare("/"))
