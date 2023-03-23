@@ -1,6 +1,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 #include <iostream>
+#include <math.h>
 #include <string>
 #include <string_view>
 
