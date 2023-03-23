@@ -1,29 +1,23 @@
 #pragma once
-#include <stack>
-#include <deque>
 #include "Common.h"
-struct CalculationToken
-{
-public:
-	enum class TokenType
-	{
-		c_none,
-		c_number,
-		c_operator
-	};
-	CalculationToken(std::string string, TokenType type, char precedence) : m_string(string), m_type(type), m_precedence(precedence){};
+#include <deque>
+#include <stack>
+struct CalculationToken {
+  public:
+	enum class TokenType { c_none, c_number, c_operator };
+	CalculationToken(std::string string, TokenType type, char precedence)
+		: m_string(string), m_type(type), m_precedence(precedence){};
 	std::string m_string;
 	TokenType m_type;
 	char m_precedence;
 };
-class Calculation
-{
+class Calculation {
 	// implementation of Shuning yard algorithm
-public:
+  public:
 	Calculation(const std::string &);
 	std::string returnAnswer();
 
-private:
+  private:
 	void parseTokensFromRequest();
 	void produceRPNStack();
 	std::string evaluateRPN();
