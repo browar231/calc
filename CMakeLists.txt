@@ -1,8 +1,9 @@
 cmake_minimum_required(VERSION 3.0.0)
 project(Calculator VERSION 0.1.0)
 
+include_directories(inc)
+add_subdirectory(src)
 
-add_executable(Calculator src/main.cpp src/Common.h src/Common.cpp src/Application.h src/Application.cpp src/Calculation.h src/Calculation.cpp)
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
