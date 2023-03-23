@@ -2,38 +2,34 @@
 #include "Common.h"
 #include <algorithm>
 #include <ctype.h>
-#include <math.h>
 
 Calculation::Calculation(const std::string &expression) {
 	m_expression = expression;
 	parseTokensFromRequest();
 	produceRPNStack();
 };
-std::string Calculation::returnAnswer() { return evaluateRPN(); };
+double Calculation::returnAnswer() { return evaluateRPN(); };
 void Calculation::parseTokensFromRequest() {
 	for (std::string::size_type i = 0; i < m_expression.size(); i++) {
 		char character = m_expression[i];
 		if (isdigit(character)) {
-			character -= '0';
+			double value = character - '0';
 			if (!m_tokenStack.empty() && isdigit(m_expression[i - 1])) {
-				int previousValue = m_expression[i - 1] - '0';
+				double previousValue = m_expression[i - 1] - '0';
 				previousValue *= 10;
-				previousValue += character;
+				previousValue += value;
 				m_tokenStack.pop_back();
-				m_tokenStack.push_back(
-					CalculationToken{std::to_string(previousValue),
-									 CalculationToken::TokenType::c_number, 0});
+				m_tokenStack.push_back(CalculationToken{
+					CalculationToken::TokenType::c_number, previousValue});
 			} else {
-				m_tokenStack.push_back(
-					CalculationToken{std::string(1, character),
-									 CalculationToken::TokenType::c_number, 0});
+				m_tokenStack.push_back(CalculationToken{
+					CalculationToken::TokenType::c_number, value});
 			}
 		}
 		if (isCharAnOperator(character)) {
-			m_tokenStack.push_back(
-				CalculationToken{std::string(1, m_expression[i]),
-								 CalculationToken::TokenType::c_operator,
-								 returnOperatorPrecedence(character)});
+			m_tokenStack.push_back(CalculationToken{
+				CalculationToken::TokenType::c_operator,
+				returnOperatorPrecedence(character), m_expression[i]});
 		}
 	}
 };
@@ -56,45 +52,43 @@ void Calculation::produceRPNStack() {
 		m_operatorStack.pop();
 	}
 }
-std::string Calculation::evaluateRPN() {
-	std::stack<std::string> evalStack;
+double Calculation::evaluateRPN() {
+	std::stack<CalculationToken> evalStack;
 	for (CalculationToken token : m_outputQueue) {
 		switch (token.m_type) {
 		case CalculationToken::TokenType::c_number:
-			evalStack.push(token.m_string);
+			evalStack.push(token);
 			break;
 		case CalculationToken::TokenType::c_operator:
-			std::string a{evalStack.top()};
+			double a{evalStack.top().m_value};
 			evalStack.pop();
-			std::string b{evalStack.top()};
+			double b{evalStack.top().m_value};
 			evalStack.pop();
-			std::string result =
-				Calculation::performMathOperation(token.m_string, a, b);
-			evalStack.push(result);
+			double result =
+				Calculation::performMathOperation(token.m_operator, a, b);
+			evalStack.push(CalculationToken{
+				CalculationToken::TokenType::c_number, result});
 			break;
 		}
 	};
-	if (std::stod(evalStack.top()) == floor(std::stod(evalStack.top()))) {
-		return std::to_string(stoi(evalStack.top()));
-	}
-	return evalStack.top();
+	return evalStack.top().m_value;
 }
-std::string Calculation::performMathOperation(std::string mathOperator,
-											  std::string a, std::string b) {
-	double result{0};
-	if (!mathOperator.compare("+"))
-		result = std::stod(a) + std::stod(b);
-	if (!mathOperator.compare("-"))
-		result = std::stod(b) - std::stod(a);
-
-	if (!mathOperator.compare("*"))
-		result = std::stod(a) * std::stod(b);
-	if (!mathOperator.compare("/")) {
-		if (stoi(a) == 0)
-			return 0;
-		result = std::stod(b) / std::stod(a);
+double Calculation::performMathOperation(char mathOperator, double b,
+										 double a) {
+	switch (mathOperator) {
+	case '+':
+		return a + b;
+	case '-':
+		return a - b;
+	case '*':
+		return a * b;
+	case '/':
+		if (b == 0)
+			return 0; // to figure out later :)
+		return a / b;
+	default:
+		return 0;
 	}
-	return std::to_string(result);
 }
 bool Calculation::isCharAnOperator(char c) {
 	if (c == '+')
