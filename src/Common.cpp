@@ -1,6 +1,7 @@
 #include "Common.h"
 
 #ifndef NDEBUG
+#ifdef DEBUG_PRINT_ALLOCATIONS
 void* operator new(size_t size)
 {
 	static int s_AllocCount { 0 };
@@ -9,4 +10,5 @@ void* operator new(size_t size)
 			  << " bytes \n";
 	return malloc(size);
 }
+#endif
 #endif
