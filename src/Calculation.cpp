@@ -6,6 +6,7 @@
 double Calculation::returnAnswer(const std::string& expression)
 {
 	std::deque<CalculationToken> parsedTokens = parseTokensFromRequest(expression);
+	parsedTokens = organizeNumbers(parsedTokens);
 	std::deque<CalculationToken> RPNQueue = produceRPNQueue(parsedTokens);
 	return evaluateRPN(RPNQueue);
 };
@@ -17,17 +18,8 @@ Calculation::parseTokensFromRequest(const std::string& expression)
 		char character = expression[i];
 		if (isdigit(character)) {
 			double value = character - '0';
-			if (!parsedTokens.empty() && isdigit(expression[i - 1])) {
-				double previousValue = expression[i - 1] - '0';
-				previousValue *= 10;
-				previousValue += value;
-				parsedTokens.pop_back();
-				parsedTokens.push_back(CalculationToken {
-					CalculationToken::TokenType::typeNumber, previousValue });
-			} else {
-				parsedTokens.push_back(CalculationToken {
-					CalculationToken::TokenType::typeNumber, value });
-			}
+			parsedTokens.push_back(CalculationToken {
+				CalculationToken::TokenType::typeNumber, value });
 		}
 		if (isCharAnOperator(character)) {
 			parsedTokens.push_back(CalculationToken {
@@ -80,6 +72,25 @@ double Calculation::evaluateRPN(std::deque<CalculationToken> RPNQueue)
 		}
 	};
 	return evalStack.top().tokenValue;
+}
+std::deque<CalculationToken> Calculation::organizeNumbers(std::deque<CalculationToken> tokens)
+{
+	// find consecutive digits and turn them into one number
+	// thought that moving it to separate function improved readability;
+	std::deque<CalculationToken> newTokens;
+	for (CalculationToken token : tokens) {
+		if (!newTokens.empty() && token.tokenType == CalculationToken::TokenType::typeNumber && newTokens.back().tokenType == CalculationToken::TokenType::typeNumber) {
+			double previousValue = newTokens.back().tokenValue;
+			previousValue *= 10;
+			previousValue += token.tokenValue;
+			newTokens.pop_back();
+			newTokens.push_back(CalculationToken {
+				CalculationToken::TokenType::typeNumber, previousValue });
+		} else {
+			newTokens.push_back(token);
+		}
+	}
+	return newTokens;
 }
 double Calculation::performMathOperation(char mathOperator, double b,
 	double a)
