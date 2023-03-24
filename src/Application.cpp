@@ -12,8 +12,7 @@ std::string Application::parseRequest(std::string request) {
 		m_shouldTerminate = true;
 		return "Terminating";
 	};
-	Calculation calculation(request);
-	double answer = calculation.returnAnswer();
+	double answer = Calculation::returnAnswer(request);
 	if (answer == floor(answer)) {
 		return std::to_string(int(answer));
 	}

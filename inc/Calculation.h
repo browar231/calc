@@ -4,33 +4,27 @@
 #include <stack>
 struct CalculationToken {
   public:
-	enum class TokenType { c_none, c_number, c_operator };
+	enum class TokenType { typeNone, typeNumber, typeOperator };
 	// constructor for numbers
 	CalculationToken(TokenType type, double value)
-		: m_type(type), m_value(value){};
+		: tokenType(type), tokenValue(value){};
 	// constructor for operators
 	CalculationToken(TokenType type, char precedence, char mathOperator)
-		: m_type(type), m_precedence(precedence), m_operator(mathOperator){};
-	double m_value;
-	TokenType m_type;
-	char m_precedence;
-	char m_operator;
+		: tokenType(type), tokenPrecedence(precedence),
+		  tokenOperator(mathOperator){};
+	double tokenValue;
+	TokenType tokenType;
+	char tokenPrecedence;
+	char tokenOperator;
 };
-class Calculation {
-	// implementation of Shuning yard algorithm
-  public:
-	Calculation(const std::string &);
-	double returnAnswer();
+namespace Calculation {
+// implementation of Shuning yard algorithm
+double returnAnswer(const std::string &);
 
-  private:
-	void parseTokensFromRequest();
-	void produceRPNStack();
-	double evaluateRPN();
-	double performMathOperation(char, double, double);
-	char returnOperatorPrecedence(char);
-	bool isCharAnOperator(char);
-	std::deque<CalculationToken> m_tokenStack;
-	std::string m_expression;
-	std::deque<CalculationToken> m_outputQueue;
-	std::stack<CalculationToken> m_operatorStack;
-};
+std::deque<CalculationToken> parseTokensFromRequest(const std::string &);
+std::deque<CalculationToken> produceRPNQueue(std::deque<CalculationToken>);
+double evaluateRPN(std::deque<CalculationToken>);
+double performMathOperation(char, double, double);
+char returnOperatorPrecedence(char);
+bool isCharAnOperator(char);
+}; // namespace Calculation

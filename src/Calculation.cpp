@@ -3,75 +3,83 @@
 #include <algorithm>
 #include <ctype.h>
 
-Calculation::Calculation(const std::string &expression) {
-	m_expression = expression;
-	parseTokensFromRequest();
-	produceRPNStack();
+double Calculation::returnAnswer(const std::string &expression) {
+	std::deque<CalculationToken> parsedTokens =
+		parseTokensFromRequest(expression);
+	std::deque<CalculationToken> RPNQueue = produceRPNQueue(parsedTokens);
+	return evaluateRPN(RPNQueue);
 };
-double Calculation::returnAnswer() { return evaluateRPN(); };
-void Calculation::parseTokensFromRequest() {
-	for (std::string::size_type i = 0; i < m_expression.size(); i++) {
-		char character = m_expression[i];
+std::deque<CalculationToken>
+Calculation::parseTokensFromRequest(const std::string &expression) {
+	std::deque<CalculationToken> parsedTokens;
+	for (std::string::size_type i = 0; i < expression.size(); i++) {
+		char character = expression[i];
 		if (isdigit(character)) {
 			double value = character - '0';
-			if (!m_tokenStack.empty() && isdigit(m_expression[i - 1])) {
-				double previousValue = m_expression[i - 1] - '0';
+			if (!parsedTokens.empty() && isdigit(expression[i - 1])) {
+				double previousValue = expression[i - 1] - '0';
 				previousValue *= 10;
 				previousValue += value;
-				m_tokenStack.pop_back();
-				m_tokenStack.push_back(CalculationToken{
-					CalculationToken::TokenType::c_number, previousValue});
+				parsedTokens.pop_back();
+				parsedTokens.push_back(CalculationToken{
+					CalculationToken::TokenType::typeNumber, previousValue});
 			} else {
-				m_tokenStack.push_back(CalculationToken{
-					CalculationToken::TokenType::c_number, value});
+				parsedTokens.push_back(CalculationToken{
+					CalculationToken::TokenType::typeNumber, value});
 			}
 		}
 		if (isCharAnOperator(character)) {
-			m_tokenStack.push_back(CalculationToken{
-				CalculationToken::TokenType::c_operator,
-				returnOperatorPrecedence(character), m_expression[i]});
+			parsedTokens.push_back(CalculationToken{
+				CalculationToken::TokenType::typeOperator,
+				returnOperatorPrecedence(character), expression[i]});
 		}
 	}
+	return parsedTokens;
 };
-void Calculation::produceRPNStack() {
-	for (CalculationToken token : m_tokenStack) {
-		if (token.m_type == CalculationToken::TokenType::c_number) {
-			m_outputQueue.push_back(token);
+std::deque<CalculationToken>
+Calculation::produceRPNQueue(std::deque<CalculationToken> tokensQueue) {
+	std::deque<CalculationToken> outputQueue;
+	std::stack<CalculationToken> operatorStack;
+	for (CalculationToken token : tokensQueue) {
+		if (token.tokenType == CalculationToken::TokenType::typeNumber) {
+			outputQueue.push_back(token);
 		}
-		if (token.m_type == CalculationToken::TokenType::c_operator) {
-			while (!m_operatorStack.empty() &&
-				   m_operatorStack.top().m_precedence >= token.m_precedence) {
-				m_outputQueue.push_back(m_operatorStack.top());
-				m_operatorStack.pop();
+		if (token.tokenType == CalculationToken::TokenType::typeOperator) {
+			while (!operatorStack.empty() &&
+				   operatorStack.top().tokenPrecedence >=
+					   token.tokenPrecedence) {
+				outputQueue.push_back(operatorStack.top());
+				operatorStack.pop();
 			}
-			m_operatorStack.push(token);
+			operatorStack.push(token);
 		}
 	}
-	while (!m_operatorStack.empty()) {
-		m_outputQueue.push_back(m_operatorStack.top());
-		m_operatorStack.pop();
+	while (!operatorStack.empty()) {
+		outputQueue.push_back(operatorStack.top());
+		operatorStack.pop();
 	}
+	return outputQueue;
 }
-double Calculation::evaluateRPN() {
+double Calculation::evaluateRPN(std::deque<CalculationToken> RPNQueue) {
 	std::stack<CalculationToken> evalStack;
-	for (CalculationToken token : m_outputQueue) {
-		switch (token.m_type) {
-		case CalculationToken::TokenType::c_number:
+	for (CalculationToken token : RPNQueue) {
+		switch (token.tokenType) {
+		case CalculationToken::TokenType::typeNumber:
 			evalStack.push(token);
 			break;
-		case CalculationToken::TokenType::c_operator:
-			double a{evalStack.top().m_value};
+		case CalculationToken::TokenType::typeOperator:
+			double a{evalStack.top().tokenValue};
 			evalStack.pop();
-			double b{evalStack.top().m_value};
+			double b{evalStack.top().tokenValue};
 			evalStack.pop();
 			double result =
-				Calculation::performMathOperation(token.m_operator, a, b);
+				Calculation::performMathOperation(token.tokenOperator, a, b);
 			evalStack.push(CalculationToken{
-				CalculationToken::TokenType::c_number, result});
+				CalculationToken::TokenType::typeNumber, result});
 			break;
 		}
 	};
-	return evalStack.top().m_value;
+	return evalStack.top().tokenValue;
 }
 double Calculation::performMathOperation(char mathOperator, double b,
 										 double a) {
