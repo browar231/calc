@@ -12,5 +12,5 @@
 #define DEBUG(x)
 #endif
 
-void *operator new(size_t size);
+void* operator new(size_t size);
 #endif

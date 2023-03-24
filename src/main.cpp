@@ -1,7 +1,8 @@
 #include "Application.h"
 #include "Common.h"
-int main() {
-	bool running{true};
+int main()
+{
+	bool running { true };
 	std::cout << "Please type your request, allowed operations: +-*/"
 			  << std::endl;
 	std::cout << "Currently works only for digits" << std::endl;
