@@ -28,6 +28,7 @@ double returnAnswer(const std::string&);
 std::deque<CalculationToken> parseTokensFromRequest(const std::string&);
 std::deque<CalculationToken> produceRPNQueue(std::deque<CalculationToken>);
 double evaluateRPN(std::deque<CalculationToken>);
+std::deque<CalculationToken> organizeNumbers(std::deque<CalculationToken> tokens);
 double performMathOperation(char, double, double);
 char returnOperatorPrecedence(char);
 bool isCharAnOperator(char);
