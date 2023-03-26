@@ -7,6 +7,7 @@ double Calculation::returnAnswer(const std::string& expression)
 {
 	std::deque<CalculationToken> parsedTokens = parseTokensFromRequest(expression);
 	parsedTokens = organizeNumbers(parsedTokens);
+	parsedTokens = organizeDecimals(parsedTokens);
 	std::deque<CalculationToken> RPNQueue = produceRPNQueue(parsedTokens);
 	return evaluateRPN(RPNQueue);
 };
@@ -24,7 +25,11 @@ Calculation::parseTokensFromRequest(const std::string& expression)
 		if (isCharAnOperator(character)) {
 			parsedTokens.push_back(CalculationToken {
 				CalculationToken::TokenType::typeOperator,
-				returnOperatorPrecedence(character), expression[i] });
+				returnOperatorPrecedence(character), character });
+		}
+		if (character == '.') {
+			parsedTokens.push_back(CalculationToken {
+				CalculationToken::TokenType::typeDotCumulator });
 		}
 	}
 	return parsedTokens;
@@ -92,6 +97,41 @@ std::deque<CalculationToken> Calculation::organizeNumbers(std::deque<Calculation
 	}
 	return newTokens;
 }
+std::deque<CalculationToken> Calculation::organizeDecimals(std::deque<CalculationToken> tokens)
+{
+	// parsing decimals
+	std::deque<CalculationToken> newTokens;
+	bool parsing = false;
+	for (CalculationToken token : tokens) {
+		switch (token.tokenType) {
+		case CalculationToken::TokenType::typeDotCumulator:
+			parsing = true;
+			newTokens.push_back(token);
+			break;
+		case CalculationToken::TokenType::typeNumber:
+			if (parsing) {
+				// treat next number as decimal part - dont push it to newTokens
+				newTokens.back().tokenValue = token.tokenValue * pow(0.1, returnOrderOfMagnitude(token.tokenValue));
+			} else {
+				newTokens.push_back(token);
+			}
+			break;
+		case CalculationToken::TokenType::typeOperator:
+			if (parsing) {
+				double decimalPart = newTokens.back().tokenValue;
+				newTokens.pop_back();
+				newTokens.back().tokenValue += decimalPart;
+				parsing = false;
+			}
+			newTokens.push_back(token);
+			break;
+
+		default:
+			newTokens.push_back(token);
+		}
+	}
+	return newTokens;
+}
 double Calculation::performMathOperation(char mathOperator, double b,
 	double a)
 {
@@ -134,4 +174,13 @@ char Calculation::returnOperatorPrecedence(char op)
 	default:
 		return -1;
 	};
+};
+int Calculation::returnOrderOfMagnitude(int x)
+{
+	int orders { 1 };
+	while (x >= 10) {
+		orders++;
+		x /= 10;
+	}
+	return orders;
 };

@@ -6,7 +6,8 @@ struct CalculationToken {
 public:
 	enum class TokenType { typeNone,
 		typeNumber,
-		typeOperator };
+		typeOperator,
+		typeDotCumulator };
 	// constructor for numbers
 	CalculationToken(TokenType type, double value)
 		: tokenType(type)
@@ -16,6 +17,10 @@ public:
 		: tokenType(type)
 		, tokenPrecedence(precedence)
 		, tokenOperator(mathOperator) {};
+	// constructor for cumulators
+	CalculationToken(TokenType type)
+		: tokenType(type)
+		, tokenValue { 0 } {};
 	double tokenValue;
 	TokenType tokenType;
 	char tokenPrecedence;
@@ -28,8 +33,10 @@ double returnAnswer(const std::string&);
 std::deque<CalculationToken> parseTokensFromRequest(const std::string&);
 std::deque<CalculationToken> produceRPNQueue(std::deque<CalculationToken>);
 double evaluateRPN(std::deque<CalculationToken>);
-std::deque<CalculationToken> organizeNumbers(std::deque<CalculationToken> tokens);
+std::deque<CalculationToken> organizeNumbers(std::deque<CalculationToken>);
+std::deque<CalculationToken> organizeDecimals(std::deque<CalculationToken>);
 double performMathOperation(char, double, double);
 char returnOperatorPrecedence(char);
 bool isCharAnOperator(char);
+int returnOrderOfMagnitude(int);
 }; // namespace Calculation
