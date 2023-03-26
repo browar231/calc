@@ -10,9 +10,12 @@ int main()
 	while (running) {
 		Application app;
 		std::string input = app.getInputFromConsole();
-		std::string_view answer = app.parseRequest(input);
-		std::cout << "Answer: " << answer << std::endl;
-		running = app.isFinished();
+		if (input != "exit") {
+			std::string_view answer = app.parseRequest(input);
+			std::cout << "Answer: " << answer << std::endl;
+		} else {
+			running = false;
+		}
 	}
 	return 0;
 }

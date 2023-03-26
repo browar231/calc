@@ -3,8 +3,7 @@
 class Application {
 public:
 	std::string getInputFromConsole();
-	std::string parseRequest(std::string request);
-	bool isFinished();
+	std::string parseRequest(std::string);
 
 private:
 	bool m_shouldTerminate = false;
