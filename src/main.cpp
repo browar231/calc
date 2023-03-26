@@ -8,10 +8,9 @@ int main()
 	std::cout << "Use dot for fractions ie. 10.32+12" << std::endl;
 	std::cout << "Type exit to close" << std::endl;
 	while (running) {
-		Application app;
-		std::string input = app.getInputFromConsole();
+		std::string input = Application::getInputFromConsole();
 		if (input != "exit") {
-			std::string_view answer = app.parseRequest(input);
+			std::string_view answer = Application::parseRequest(input);
 			std::cout << "Answer: " << answer << std::endl;
 		} else {
 			running = false;
