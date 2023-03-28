@@ -20,6 +20,9 @@ Calculation::parseTokensFromRequest(const std::string& expression)
 		if (isdigit(character) || character == '.') {
 			buffer += character;
 		}
+		if (buffer.empty() && character == '-') {
+			buffer += character;
+		}
 		if (isCharAnOperator(character)) {
 			if (!buffer.empty()) {
 				parsedTokens.push_back(CalculationToken {
