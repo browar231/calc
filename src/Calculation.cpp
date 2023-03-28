@@ -83,25 +83,6 @@ double Calculation::evaluateRPN(std::deque<CalculationToken> RPNQueue)
 	};
 	return evalStack.top().tokenValue;
 }
-std::deque<CalculationToken> Calculation::organizeNumbers(std::deque<CalculationToken> tokens)
-{
-	// find consecutive digits and turn them into one number
-	// thought that moving it to separate function improved readability;
-	std::deque<CalculationToken> newTokens;
-	for (CalculationToken token : tokens) {
-		if (!newTokens.empty() && token.tokenType == CalculationToken::TokenType::typeNumber && newTokens.back().tokenType == CalculationToken::TokenType::typeNumber) {
-			double previousValue = newTokens.back().tokenValue;
-			previousValue *= 10;
-			previousValue += token.tokenValue;
-			newTokens.pop_back();
-			newTokens.push_back(CalculationToken {
-				CalculationToken::TokenType::typeNumber, previousValue });
-		} else {
-			newTokens.push_back(token);
-		}
-	}
-	return newTokens;
-}
 double Calculation::performMathOperation(char mathOperator, double b,
 	double a)
 {
