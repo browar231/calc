@@ -6,32 +6,37 @@
 double Calculation::returnAnswer(const std::string& expression)
 {
 	std::deque<CalculationToken> parsedTokens = parseTokensFromRequest(expression);
-	parsedTokens = organizeNumbers(parsedTokens);
-	parsedTokens = organizeDecimals(parsedTokens);
 	std::deque<CalculationToken> RPNQueue = produceRPNQueue(parsedTokens);
 	return evaluateRPN(RPNQueue);
 };
 std::deque<CalculationToken>
 Calculation::parseTokensFromRequest(const std::string& expression)
 {
+	std::string buffer = "";
 	std::deque<CalculationToken> parsedTokens;
 	for (std::string::size_type i = 0; i < expression.size(); i++) {
 		char character = expression[i];
-		if (isdigit(character)) {
-			double value = character - '0';
-			parsedTokens.push_back(CalculationToken {
-				CalculationToken::TokenType::typeNumber, value });
+
+		if (isdigit(character) || character == '.') {
+			buffer += character;
 		}
 		if (isCharAnOperator(character)) {
+			if (!buffer.empty()) {
+				parsedTokens.push_back(CalculationToken {
+					CalculationToken::TokenType::typeNumber, stod(buffer) });
+				buffer.erase();
+			}
 			parsedTokens.push_back(CalculationToken {
 				CalculationToken::TokenType::typeOperator,
 				returnOperatorPrecedence(character), character });
 		}
-		if (character == '.') {
-			parsedTokens.push_back(CalculationToken {
-				CalculationToken::TokenType::typeDotCumulator });
-		}
 	}
+	if (!buffer.empty()) {
+		parsedTokens.push_back(CalculationToken {
+			CalculationToken::TokenType::typeNumber, stod(buffer) });
+		buffer.erase();
+	}
+
 	return parsedTokens;
 };
 std::deque<CalculationToken>
@@ -92,41 +97,6 @@ std::deque<CalculationToken> Calculation::organizeNumbers(std::deque<Calculation
 			newTokens.push_back(CalculationToken {
 				CalculationToken::TokenType::typeNumber, previousValue });
 		} else {
-			newTokens.push_back(token);
-		}
-	}
-	return newTokens;
-}
-std::deque<CalculationToken> Calculation::organizeDecimals(std::deque<CalculationToken> tokens)
-{
-	// parsing decimals
-	std::deque<CalculationToken> newTokens;
-	bool parsing = false;
-	for (CalculationToken token : tokens) {
-		switch (token.tokenType) {
-		case CalculationToken::TokenType::typeDotCumulator:
-			parsing = true;
-			newTokens.push_back(token);
-			break;
-		case CalculationToken::TokenType::typeNumber:
-			if (parsing) {
-				// treat next number as decimal part - dont push it to newTokens
-				newTokens.back().tokenValue = token.tokenValue * pow(0.1, returnOrderOfMagnitude(token.tokenValue));
-			} else {
-				newTokens.push_back(token);
-			}
-			break;
-		case CalculationToken::TokenType::typeOperator:
-			if (parsing) {
-				double decimalPart = newTokens.back().tokenValue;
-				newTokens.pop_back();
-				newTokens.back().tokenValue += decimalPart;
-				parsing = false;
-			}
-			newTokens.push_back(token);
-			break;
-
-		default:
 			newTokens.push_back(token);
 		}
 	}
