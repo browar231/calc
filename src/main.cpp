@@ -9,12 +9,12 @@ int main()
 	std::cout << "Type exit to close" << std::endl;
 	while (running) {
 		std::string input = Application::getInputFromConsole();
-		if (input != "exit") {
-			std::string_view answer = Application::parseRequest(input);
-			std::cout << "Answer: " << answer << std::endl;
-		} else {
+		if (input == "exit") {
 			running = false;
+			break;
 		}
+		std::string_view answer = Application::parseRequest(input);
+		std::cout << "Answer: " << answer << std::endl;
 	}
 	return 0;
 }
