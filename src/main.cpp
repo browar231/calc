@@ -13,7 +13,7 @@ int main()
 			running = false;
 			break;
 		}
-		std::string_view answer = Application::parseRequest(input);
+		std::string answer = Application::parseRequest(input);
 		std::cout << "Answer: " << answer << std::endl;
 	}
 	return 0;
