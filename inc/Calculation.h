@@ -2,11 +2,13 @@
 #include "Common.h"
 #include <deque>
 #include <stack>
+namespace Calculation {
+// implementation of Shuning yard algorithm
+enum class TokenType { typeNone,
+	typeNumber,
+	typeOperator };
 struct CalculationToken {
 public:
-	enum class TokenType { typeNone,
-		typeNumber,
-		typeOperator };
 	// constructor for numbers
 	CalculationToken(TokenType type, double value)
 		: tokenType(type)
@@ -21,8 +23,6 @@ public:
 	char tokenPrecedence;
 	char tokenOperator;
 };
-namespace Calculation {
-// implementation of Shuning yard algorithm
 double returnAnswer(const std::string&);
 
 std::deque<CalculationToken> parseTokensFromRequest(const std::string&);

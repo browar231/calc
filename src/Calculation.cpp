@@ -26,18 +26,16 @@ parseTokensFromRequest(const std::string& expression)
 		}
 		if (isCharAnOperator(character)) {
 			if (!buffer.empty()) {
-				parsedTokens.push_back(CalculationToken {
-					CalculationToken::TokenType::typeNumber, stod(buffer) });
+				parsedTokens.emplace_back(TokenType::typeNumber, stod(buffer));
 				buffer.erase();
 			}
-			parsedTokens.push_back(CalculationToken {
-				CalculationToken::TokenType::typeOperator,
-				returnOperatorPrecedence(character), character });
+			parsedTokens.emplace_back(TokenType::typeOperator,
+				returnOperatorPrecedence(character), character);
 		}
 	}
 	if (!buffer.empty()) {
-		parsedTokens.push_back(CalculationToken {
-			CalculationToken::TokenType::typeNumber, stod(buffer) });
+		parsedTokens.emplace_back(
+			TokenType::typeNumber, stod(buffer));
 		buffer.erase();
 	}
 
@@ -49,10 +47,10 @@ produceRPNQueue(std::deque<CalculationToken> tokensQueue)
 	std::deque<CalculationToken> outputQueue;
 	std::stack<CalculationToken> operatorStack;
 	for (CalculationToken token : tokensQueue) {
-		if (token.tokenType == CalculationToken::TokenType::typeNumber) {
+		if (token.tokenType == TokenType::typeNumber) {
 			outputQueue.push_back(token);
 		}
-		if (token.tokenType == CalculationToken::TokenType::typeOperator) {
+		if (token.tokenType == TokenType::typeOperator) {
 			while (!operatorStack.empty() && operatorStack.top().tokenPrecedence >= token.tokenPrecedence) {
 				outputQueue.push_back(operatorStack.top());
 				operatorStack.pop();
@@ -71,17 +69,17 @@ double evaluateRPN(std::deque<CalculationToken> RPNQueue)
 	std::stack<CalculationToken> evalStack;
 	for (CalculationToken token : RPNQueue) {
 		switch (token.tokenType) {
-		case CalculationToken::TokenType::typeNumber:
+		case TokenType::typeNumber:
 			evalStack.push(token);
 			break;
-		case CalculationToken::TokenType::typeOperator:
+		case TokenType::typeOperator:
 			double a { evalStack.top().tokenValue };
 			evalStack.pop();
 			double b { evalStack.top().tokenValue };
 			evalStack.pop();
 			double result = performMathOperation(token.tokenOperator, a, b);
-			evalStack.push(CalculationToken {
-				CalculationToken::TokenType::typeNumber, result });
+			evalStack.emplace(
+				TokenType::typeNumber, result);
 			break;
 		}
 	};
