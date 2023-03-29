@@ -99,6 +99,8 @@ double performMathOperation(char mathOperator, double b,
 		if (b == 0)
 			throw std::runtime_error("Dividing by zero not allowed");
 		return a / b;
+	case '^':
+		return pow(a, b);
 	default:
 		return 0;
 	}
@@ -113,6 +115,8 @@ bool isCharAnOperator(char c)
 		return true;
 	if (c == '*')
 		return true;
+	if (c == '^')
+		return true;
 	return false;
 }
 char returnOperatorPrecedence(char op)
@@ -124,6 +128,8 @@ char returnOperatorPrecedence(char op)
 	case '*':
 	case '/':
 		return 2;
+	case '^':
+		return 3;
 	default:
 		return -1;
 	};

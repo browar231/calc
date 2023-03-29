@@ -4,7 +4,7 @@
 int main()
 {
 	bool running { true };
-	std::cout << "Please type your request without spaces, allowed operations: +-*/"
+	std::cout << "Please type your request without spaces, allowed operations: +-*/^"
 			  << std::endl;
 	std::cout << "Use dot for fractions ie. 10.32+12" << std::endl;
 	std::cout << "Type exit to close" << std::endl;
