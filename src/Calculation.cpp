@@ -20,12 +20,15 @@ parseTokensFromRequest(const std::string& expression)
 
 		if (isdigit(character) || character == '.') {
 			buffer += character;
+			continue;
 		}
 		if (character == ',') {
 			buffer += '.';
+			continue;
 		}
 		if (buffer.empty() && character == '-') {
 			buffer += character;
+			continue;
 		}
 		if (isCharAnOperator(character)) {
 			if (!buffer.empty()) {
