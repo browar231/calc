@@ -6,8 +6,7 @@ struct CalculationToken {
 public:
 	enum class TokenType { typeNone,
 		typeNumber,
-		typeOperator,
-		typeDotCumulator };
+		typeOperator };
 	// constructor for numbers
 	CalculationToken(TokenType type, double value)
 		: tokenType(type)
@@ -17,10 +16,6 @@ public:
 		: tokenType(type)
 		, tokenPrecedence(precedence)
 		, tokenOperator(mathOperator) {};
-	// constructor for cumulators
-	CalculationToken(TokenType type)
-		: tokenType(type)
-		, tokenValue { 0 } {};
 	double tokenValue;
 	TokenType tokenType;
 	char tokenPrecedence;
