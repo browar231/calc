@@ -21,6 +21,9 @@ parseTokensFromRequest(const std::string& expression)
 		if (isdigit(character) || character == '.') {
 			buffer += character;
 		}
+		if (character == ',') {
+			buffer += '.';
+		}
 		if (buffer.empty() && character == '-') {
 			buffer += character;
 		}
