@@ -128,13 +128,4 @@ char returnOperatorPrecedence(char op)
 		return -1;
 	};
 };
-int returnOrderOfMagnitude(int x)
-{
-	int orders { 1 };
-	while (x >= 10) {
-		orders++;
-		x /= 10;
-	}
-	return orders;
-};
 }

@@ -31,5 +31,4 @@ double evaluateRPN(std::deque<CalculationToken>);
 double performMathOperation(char, double, double);
 char returnOperatorPrecedence(char);
 bool isCharAnOperator(char);
-int returnOrderOfMagnitude(int);
 }; // namespace Calculation
