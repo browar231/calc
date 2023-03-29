@@ -1,14 +1,15 @@
 #include "Application.h"
 #include "Calculation.h"
 #include "Common.h"
-std::string Application::getInputFromConsole()
+namespace Application {
+std::string getInputFromConsole()
 {
 	std::string input;
 	std::cout << "Request: ";
 	std::getline(std::cin >> std::ws, input);
 	return input;
 }
-std::string Application::parseRequest(std::string request)
+std::string parseRequest(std::string request)
 {
 	double answer = Calculation::returnAnswer(request);
 	if (answer == floor(answer)) {
@@ -16,3 +17,4 @@ std::string Application::parseRequest(std::string request)
 	}
 	return std::to_string(answer);
 };
+}

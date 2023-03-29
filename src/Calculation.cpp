@@ -3,14 +3,15 @@
 #include <algorithm>
 #include <ctype.h>
 
-double Calculation::returnAnswer(const std::string& expression)
+namespace Calculation {
+double returnAnswer(const std::string& expression)
 {
 	std::deque<CalculationToken> parsedTokens = parseTokensFromRequest(expression);
 	std::deque<CalculationToken> RPNQueue = produceRPNQueue(parsedTokens);
 	return evaluateRPN(RPNQueue);
 };
 std::deque<CalculationToken>
-Calculation::parseTokensFromRequest(const std::string& expression)
+parseTokensFromRequest(const std::string& expression)
 {
 	std::string buffer = "";
 	std::deque<CalculationToken> parsedTokens;
@@ -43,7 +44,7 @@ Calculation::parseTokensFromRequest(const std::string& expression)
 	return parsedTokens;
 };
 std::deque<CalculationToken>
-Calculation::produceRPNQueue(std::deque<CalculationToken> tokensQueue)
+produceRPNQueue(std::deque<CalculationToken> tokensQueue)
 {
 	std::deque<CalculationToken> outputQueue;
 	std::stack<CalculationToken> operatorStack;
@@ -65,7 +66,7 @@ Calculation::produceRPNQueue(std::deque<CalculationToken> tokensQueue)
 	}
 	return outputQueue;
 }
-double Calculation::evaluateRPN(std::deque<CalculationToken> RPNQueue)
+double evaluateRPN(std::deque<CalculationToken> RPNQueue)
 {
 	std::stack<CalculationToken> evalStack;
 	for (CalculationToken token : RPNQueue) {
@@ -78,7 +79,7 @@ double Calculation::evaluateRPN(std::deque<CalculationToken> RPNQueue)
 			evalStack.pop();
 			double b { evalStack.top().tokenValue };
 			evalStack.pop();
-			double result = Calculation::performMathOperation(token.tokenOperator, a, b);
+			double result = performMathOperation(token.tokenOperator, a, b);
 			evalStack.push(CalculationToken {
 				CalculationToken::TokenType::typeNumber, result });
 			break;
@@ -86,7 +87,7 @@ double Calculation::evaluateRPN(std::deque<CalculationToken> RPNQueue)
 	};
 	return evalStack.top().tokenValue;
 }
-double Calculation::performMathOperation(char mathOperator, double b,
+double performMathOperation(char mathOperator, double b,
 	double a)
 {
 	switch (mathOperator) {
@@ -104,7 +105,7 @@ double Calculation::performMathOperation(char mathOperator, double b,
 		return 0;
 	}
 }
-bool Calculation::isCharAnOperator(char c)
+bool isCharAnOperator(char c)
 {
 	if (c == '+')
 		return true;
@@ -116,7 +117,7 @@ bool Calculation::isCharAnOperator(char c)
 		return true;
 	return false;
 }
-char Calculation::returnOperatorPrecedence(char op)
+char returnOperatorPrecedence(char op)
 {
 	switch (op) {
 	case '+':
@@ -129,7 +130,7 @@ char Calculation::returnOperatorPrecedence(char op)
 		return -1;
 	};
 };
-int Calculation::returnOrderOfMagnitude(int x)
+int returnOrderOfMagnitude(int x)
 {
 	int orders { 1 };
 	while (x >= 10) {
@@ -138,3 +139,4 @@ int Calculation::returnOrderOfMagnitude(int x)
 	}
 	return orders;
 };
+}
