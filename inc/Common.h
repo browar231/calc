@@ -2,6 +2,7 @@
 #define COMMON_H
 #include <iostream>
 #include <math.h>
+#include <stdexcept>
 #include <string>
 #include <string_view>
 

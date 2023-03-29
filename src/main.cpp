@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "Common.h"
+
 int main()
 {
 	bool running { true };
@@ -13,8 +14,12 @@ int main()
 			running = false;
 			break;
 		}
-		std::string answer = Application::parseRequest(input);
-		std::cout << "Answer: " << answer << std::endl;
+		try {
+			std::string answer = Application::parseRequest(input);
+			std::cout << "Answer: " << answer << std::endl;
+		} catch (std::runtime_error& error) {
+			std::cout << error.what() << std::endl;
+		}
 	}
 	return 0;
 }

@@ -97,7 +97,7 @@ double performMathOperation(char mathOperator, double b,
 		return a * b;
 	case '/':
 		if (b == 0)
-			return 0; // to figure out later :)
+			throw std::runtime_error("Dividing by zero not allowed");
 		return a / b;
 	default:
 		return 0;
