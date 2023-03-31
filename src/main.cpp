@@ -1,29 +1,40 @@
 #include "main.h"
 #include "Application.h"
 MainFrame::MainFrame(const wxString& title)
-	: wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(400, 400))
+	: wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(400, 200))
 {
 	// elements
 	inputTextBox = new wxTextCtrl(this, -1, "", wxPoint(-1, -1));
 	outputTextBox = new wxTextCtrl(this, -1, "Results", wxPoint(-1, -1), wxDefaultSize, wxTE_READONLY);
 
 	wxButton* submitButton = new wxButton(this, ID_SUBMIT_BUTTON, wxT("Submit"));
+	wxButton* clearButton = new wxButton(this, ID_CLEAR_BUTTON, wxT("Clear"));
 	wxButton* quitButton = new wxButton(this, wxID_EXIT, wxT("Quit"));
 
-	// sizer
-	wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
-	sizer->Add(inputTextBox, 0, wxEXPAND, 0);
-	sizer->Add(outputTextBox, 0, wxEXPAND, 0);
-	sizer->Add(submitButton, 0, wxALIGN_LEFT, 0);
-	sizer->Add(quitButton, 0, wxALIGN_RIGHT, 0);
+	// positioning
+	wxBoxSizer* vSizer = new wxBoxSizer(wxVERTICAL);
+	vSizer->Add(inputTextBox, 0, wxEXPAND | wxTOP | wxBOTTOM, 4);
+
+	wxGridSizer* gs = new wxGridSizer(1, 4, 5, 5);
+
+	gs->Add(outputTextBox, 0);
+	gs->Add(submitButton, 0);
+	gs->Add(clearButton, 0);
+	gs->Add(quitButton, 0);
+
+	vSizer->Add(gs, 1, wxEXPAND);
 	// sizer->SetSizeHints(this);
-	SetSizer(sizer);
+	SetSizer(vSizer);
+	SetMinSize(wxSize(380, 200));
+	SetMaxSize(wxSize(400, 200));
 
 	// events
 	Connect(wxID_EXIT, wxEVT_COMMAND_BUTTON_CLICKED,
 		wxCommandEventHandler(MainFrame::OnQuit));
 	Connect(ID_SUBMIT_BUTTON, wxEVT_COMMAND_BUTTON_CLICKED,
 		wxCommandEventHandler(MainFrame::OnSubmit));
+	Connect(ID_CLEAR_BUTTON, wxEVT_COMMAND_BUTTON_CLICKED,
+		wxCommandEventHandler(MainFrame::OnClear));
 	// init
 	Centre();
 }
@@ -37,6 +48,10 @@ void MainFrame::OnSubmit(wxCommandEvent& event)
 	} catch (std::runtime_error& error) {
 		outputTextBox->SetValue("Error");
 	}
+}
+void MainFrame::OnClear(wxCommandEvent& event)
+{
+	inputTextBox->SetValue("");
 }
 void MainFrame::OnQuit(wxCommandEvent& event)
 {
