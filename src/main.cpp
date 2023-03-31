@@ -52,6 +52,7 @@ void MainFrame::OnSubmit(wxCommandEvent& event)
 void MainFrame::OnClear(wxCommandEvent& event)
 {
 	inputTextBox->SetValue("");
+	outputTextBox->SetValue("");
 }
 void MainFrame::OnQuit(wxCommandEvent& event)
 {
