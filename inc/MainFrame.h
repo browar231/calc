@@ -1,7 +1,10 @@
 #pragma once
 #include <wx/wx.h>
-const int ID_SUBMIT_BUTTON { 999 };
-const int ID_CLEAR_BUTTON { 998 };
+enum {
+	ID_SUBMIT_BUTTON,
+	ID_CLEAR_BUTTON
+};
+
 class MainFrame : public wxFrame {
 public:
 	MainFrame(const wxString& title);
