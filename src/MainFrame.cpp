@@ -1,5 +1,5 @@
-#include "main.h"
-#include "Application.h"
+#include "MainFrame.h"
+#include "Calculation.h"
 MainFrame::MainFrame(const wxString& title)
 	: wxFrame(NULL, wxID_ANY, title, wxDefaultPosition, wxSize(400, 200))
 {
@@ -41,10 +41,12 @@ MainFrame::MainFrame(const wxString& title)
 void MainFrame::OnSubmit(wxCommandEvent& event)
 {
 	std::string input = inputTextBox->GetValue().ToStdString();
-	wxString answer(Application::parseRequest(input));
+	wxString outputValue;
 	try {
-		wxString answer(Application::parseRequest(input));
-		outputTextBox->SetValue(answer);
+		double answer(Calculation::returnAnswer(input));
+		outputValue << answer;
+		outputTextBox->SetValue(outputValue);
+
 	} catch (std::runtime_error& error) {
 		outputTextBox->SetValue("Error");
 	}
@@ -58,12 +60,11 @@ void MainFrame::OnQuit(wxCommandEvent& event)
 {
 	Close(true);
 }
-IMPLEMENT_APP(Calculator)
-
-bool Calculator::OnInit()
+std::string MainFrame::parseRequest(std::string request)
 {
-	MainFrame* frame = new MainFrame(wxT("Calculator"));
-	frame->Show(true);
-
-	return true;
+	double answer = Calculation::returnAnswer(request);
+	if (answer == floor(answer)) {
+		return std::to_string(int(answer));
+	}
+	return std::to_string(answer);
 }

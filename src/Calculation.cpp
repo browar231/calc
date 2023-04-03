@@ -1,7 +1,11 @@
 #include "Calculation.h"
-#include "Common.h"
 #include <algorithm>
 #include <ctype.h>
+#include <deque>
+#include <math.h>
+#include <stack>
+#include <stdexcept>
+#include <string>
 
 namespace Calculation {
 double returnAnswer(const std::string& expression)

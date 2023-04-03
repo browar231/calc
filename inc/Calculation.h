@@ -1,7 +1,11 @@
 #pragma once
-#include "Common.h"
+#include <algorithm>
+#include <ctype.h>
 #include <deque>
+#include <math.h>
 #include <stack>
+#include <stdexcept>
+#include <string>
 namespace Calculation {
 // implementation of Shuning yard algorithm
 enum class TokenType { typeNone,
