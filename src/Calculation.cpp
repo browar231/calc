@@ -10,7 +10,13 @@
 namespace Calculation {
 double returnAnswer(const std::string& expression)
 {
+	if (expression.empty()) {
+		throw std::runtime_error("Invalid expression");
+	}
 	std::deque<CalculationToken> parsedTokens = parseTokensFromRequest(expression);
+	if (parsedTokens.empty()) {
+		throw std::runtime_error("Invalid expression");
+	}
 	std::deque<CalculationToken> RPNQueue = produceRPNQueue(parsedTokens);
 	return evaluateRPN(RPNQueue);
 };
@@ -107,7 +113,7 @@ double performMathOperation(char mathOperator, double b,
 		return a * b;
 	case '/':
 		if (b == 0)
-			throw std::runtime_error("Dividing by zero not allowed");
+			throw std::runtime_error("Dividing by zero");
 		return a / b;
 	case '^':
 		return pow(a, b);
