@@ -3,6 +3,9 @@
     "name": "calculator",
     "version": "0.1.0",
     "dependencies": [
-        "wxwidgets"
+        {
+            "name": "wxwidgets",
+            "default-features": false
+        }
     ]
 }
