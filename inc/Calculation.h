@@ -10,7 +10,8 @@ namespace Calculation {
 // implementation of Shuning yard algorithm
 enum class TokenType { typeNone,
 	typeNumber,
-	typeOperator };
+	typeOperator,
+	typeParenthesis };
 struct CalculationToken {
 public:
 	// constructor for numbers
