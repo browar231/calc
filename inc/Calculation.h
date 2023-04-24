@@ -6,6 +6,7 @@
 #include <stack>
 #include <stdexcept>
 #include <string>
+#include <variant>
 namespace Calculation {
 // implementation of Shuning yard algorithm
 enum class TokenType { typeNone,
@@ -19,13 +20,11 @@ public:
 		: tokenType(type)
 		, tokenValue(value) {};
 	// constructor for operators
-	CalculationToken(TokenType type, char precedence, char mathOperator)
+	CalculationToken(TokenType type, char mathOperator)
 		: tokenType(type)
-		, tokenPrecedence(precedence)
 		, tokenOperator(mathOperator) {};
-	double tokenValue;
+	std::variant<double, char> tokenValue;
 	TokenType tokenType;
-	char tokenPrecedence;
 	char tokenOperator;
 };
 double returnAnswer(const std::string&);
@@ -35,5 +34,6 @@ std::deque<CalculationToken> produceRPNQueue(std::deque<CalculationToken>);
 double evaluateRPN(std::deque<CalculationToken>);
 double performMathOperation(char, double, double);
 char returnOperatorPrecedence(char);
+char returnOperatorPrecedence(CalculationToken& token);
 bool isCharAnOperator(char);
 }; // namespace Calculation
