@@ -6,6 +6,7 @@
 #include <stack>
 #include <stdexcept>
 #include <string>
+#include <variant>
 
 namespace Calculation {
 double returnAnswer(const std::string& expression)
@@ -45,8 +46,7 @@ parseTokensFromRequest(const std::string& expression)
 				parsedTokens.emplace_back(TokenType::typeNumber, stod(buffer));
 				buffer.erase();
 			}
-			parsedTokens.emplace_back(TokenType::typeOperator,
-				returnOperatorPrecedence(character), character);
+			parsedTokens.emplace_back(TokenType::typeOperator, character);
 		}
 	}
 	if (!buffer.empty()) {
@@ -67,7 +67,7 @@ produceRPNQueue(std::deque<CalculationToken> tokensQueue)
 			outputQueue.push_back(token);
 		}
 		if (token.tokenType == TokenType::typeOperator) {
-			while (!operatorStack.empty() && operatorStack.top().tokenPrecedence >= token.tokenPrecedence) {
+			while (!operatorStack.empty() && returnOperatorPrecedence(operatorStack.top()) >= returnOperatorPrecedence(token)) {
 				outputQueue.push_back(operatorStack.top());
 				operatorStack.pop();
 			}
@@ -89,9 +89,9 @@ double evaluateRPN(std::deque<CalculationToken> RPNQueue)
 			evalStack.push(token);
 			break;
 		case TokenType::typeOperator:
-			double a { evalStack.top().tokenValue };
+			double a { std::get<double>(evalStack.top().tokenValue) };
 			evalStack.pop();
-			double b { evalStack.top().tokenValue };
+			double b { std::get<double>(evalStack.top().tokenValue) };
 			evalStack.pop();
 			double result = performMathOperation(token.tokenOperator, a, b);
 			evalStack.emplace(
@@ -99,7 +99,7 @@ double evaluateRPN(std::deque<CalculationToken> RPNQueue)
 			break;
 		}
 	};
-	return evalStack.top().tokenValue;
+	return std::get<double>(evalStack.top().tokenValue);
 }
 double performMathOperation(char mathOperator, double b,
 	double a)
@@ -149,5 +149,10 @@ char returnOperatorPrecedence(char op)
 	default:
 		return -1;
 	};
+};
+
+char returnOperatorPrecedence(CalculationToken& token)
+{
+	return returnOperatorPrecedence(std::get<char>(token.tokenValue));
 };
 }
